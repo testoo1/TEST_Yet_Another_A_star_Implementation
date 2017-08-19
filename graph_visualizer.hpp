@@ -1,10 +1,12 @@
 #pragma once
 
 
+#include "graph.hpp"
+#include "cell.hpp"
+
 #include <SFML/Graphics.hpp>
 
-class Graph;
-class Cell;
+#include <cmath>
 
 
 class Graph_visualizer
@@ -17,15 +19,19 @@ public:
     };
 
 private:
-    Graph& _data;
+    Graph& _graph;
+    sf::RenderWindow& _target;
 
     sf::RectangleShape _cell;
+
+    float _cellSize;
     int _gap;
 
-    sf::Texture _base;
+    sf::RenderTexture _baseTexture;
 
     enum class CellType
     {
+        Empty,
         Wall,
         Start,
         Stop,
@@ -34,11 +40,18 @@ private:
     };
 
 public:
-    Graph_visualizer(Graph&);
+    Graph_visualizer(Graph&, sf::RenderWindow&);
 
-    void drawTo(sf::RenderWindow target);
-    void draw(Cell&);
+    void init();
 
-    // CS - Coordinare System
-    sf::Vector2f changeCS(sf::Vector2f, CoordSystem);
+    void render();
+
+    void draw(Cell*, CellType=CellType::Empty);
+    void draw(sf::RenderTarget&, Cell*, CellType=CellType::Empty);
+
+    void drawBase(sf::RenderTarget&);
+
+    sf::Vector2i getCellCoord(sf::Vector2i);
+
+    bool isPointToCell(sf::Vector2i&);
 };

@@ -12,7 +12,9 @@ private:
     std::unordered_set<Cell,Cell_Hash> _data;
 
 public:
-    Wall(){};
     void insert(Cell&);
-    void erace(Cell&);
+    void erase(Cell&);
+
+    bool inWall(Cell&);
+    std::unordered_set<Cell,Cell_Hash>& getWall();
 };

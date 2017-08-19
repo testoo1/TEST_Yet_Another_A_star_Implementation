@@ -16,18 +16,26 @@ private:
     int _size;
     std::vector<std::vector<Cell>> _data;    
 
-    Cell* _start;
-    Cell* _stop;
-
     friend Neighbors;
     friend Graph_visualizer;
 
 public:
+    Cell* _start;
+    Cell* _stop;
+
     Wall  _wall;
     Neighbors _neighbors;
 
-    void setStart(Cell&);
-    void setStop(Cell&);
+    Graph(int size);
+
+    Cell& getCell(sf::Vector2i& coord);
+
+    bool canBeMoved(Cell&);
+    bool canBePlaced(Cell&);
+
+    bool canBeWalled(Cell&);
+
+    bool inGraph(sf::Vector2i);
 };
 
 

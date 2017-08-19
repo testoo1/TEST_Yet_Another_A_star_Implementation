@@ -20,11 +20,18 @@ private:
 
     friend UI;
 
+    enum class Operation
+    {
+    	Move,
+    	Draw,
+    	Erase
+    };
+
 public:
     App();
     void run();
     void processEvent();
     void render();
 
-
+    bool inWindow(sf::Vector2i&);
 };

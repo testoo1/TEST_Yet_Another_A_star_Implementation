@@ -21,7 +21,7 @@ void App::processEvent()
 
     sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 
-    static Operation operation;
+    static Operation operation {Operation::None};
     static iNode** movable;
 
     while(_window.pollEvent(event))
@@ -33,7 +33,6 @@ void App::processEvent()
                 break;
 
             case(sf::Event::KeyPressed):
-            {
                 if(event.key.code == sf::Keyboard::Return)
                 {
                     switch(_a_star.state())
@@ -51,45 +50,53 @@ void App::processEvent()
                             break;
                     }
                 }
-
                 if(event.key.code == sf::Keyboard::Space)
                 {
                     _a_star.pause();
                 }
                 break;
-            }
+
+            case(sf::Event::MouseButtonReleased):
+                if(event.mouseButton.button == sf::Mouse::Left)
+                {
+                    operation = Operation::None;                    
+                }
+                break;
 
             case(sf::Event::MouseButtonPressed):
-                sf::Vector2i cellCoord = _visualizer.getCellCoord(mousePosition);
-                if(_grid.inGraph(cellCoord))
+                if(event.mouseButton.button == sf::Mouse::Left)
                 {
-                    iNode& cell = _grid.getNode(cellCoord);
-                    if(_grid.canBeMoved(cell))
+                    sf::Vector2i cellCoord = _visualizer.getCellCoord(mousePosition);
+                    if(_grid.inGraph(cellCoord))
                     {
-                        if(&cell == _grid._start)
+                        iNode& cell = _grid.getNode(cellCoord);
+                        if(_grid.canBeMoved(cell))
                         {
-                            movable = &_grid._start;
+                            if(&cell == _grid._start)
+                            {
+                                movable = &_grid._start;
+                            }
+                            else if (&cell == _grid._stop)
+                            {
+                                movable = &_grid._stop;
+                            }
+                            operation = Operation::Move;                            
                         }
-                        else if (&cell == _grid._stop)
-                        {
-                            movable = &_grid._stop;
-                        }
-                        operation = Operation::Move;                            
-                    }
 
-                    else
-                    {
-                        if(_grid._wall.inWall(cell))
-                        {
-                            _grid._wall.erase(cell);
-                            operation = Operation::Erase;                    
-                        }
                         else
                         {
-                            _grid._wall.insert(cell);
-                            operation = Operation::Draw;  
-                        }                        
-                    }
+                            if(_grid._wall.inWall(cell))
+                            {
+                                _grid._wall.erase(cell);
+                                operation = Operation::Erase;                    
+                            }
+                            else
+                            {
+                                _grid._wall.insert(cell);
+                                operation = Operation::Draw;  
+                            }
+                        }
+                    }                
                 }
                 break;
         }

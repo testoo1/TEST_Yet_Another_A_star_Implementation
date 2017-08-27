@@ -13,10 +13,10 @@ void Graph_visualizer::init()
 {
     // REAL value for final application (uncomment this)
     // for window(800,800) gap = 4
-    _gap = _target.getSize().x/((_graph._size-1)*10*2);
+    // _gap = _target.getSize().x/((_graph._size-1)*10*2);
     
     // TEMP value for test cell detection algoritm (isPointToCell)
-    // _gap = 20;
+    _gap = 20;
     _cellSize = static_cast<float>(_target.getSize().x - _gap*(_graph._size-1))/_graph._size;
     _cell.setSize(sf::Vector2f(_cellSize,_cellSize));
 

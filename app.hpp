@@ -21,6 +21,7 @@ private:
 
     enum class Operation
     {
+        None,
         Move,
         Draw,
         Erase

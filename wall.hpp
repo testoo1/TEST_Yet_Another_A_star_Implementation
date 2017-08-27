@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "cell_hash.hpp"
+#include "node.hpp"
 
 #include <unordered_set>
 
@@ -9,12 +9,12 @@
 class Wall
 {
 private:
-    std::unordered_set<Cell,Cell_Hash> _data;
+    std::unordered_set<iNode*> _data;
 
 public:
-    void insert(Cell&);
-    void erase(Cell&);
+    void insert(iNode&);
+    void erase(iNode&);
 
-    bool inWall(Cell&);
-    std::unordered_set<Cell,Cell_Hash>& getWall();
+    bool inWall(iNode&);
+    std::unordered_set<iNode*>& getWall();
 };

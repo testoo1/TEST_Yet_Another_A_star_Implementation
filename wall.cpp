@@ -1,21 +1,21 @@
 #include "wall.hpp"
 
-void Wall::insert(Cell& cell)
+void Wall::insert(iNode& cell)
 {
-    _data.insert(cell);
+    _data.insert(&cell);
 }
 
-void Wall::erase(Cell& cell)
+void Wall::erase(iNode& cell)
 {
-    _data.erase(cell);
+    _data.erase(&cell);
 }
 
-bool Wall::inWall(Cell& cell)
+bool Wall::inWall(iNode& cell)
 {
-    return(_data.find(cell) != _data.end());
+    return(_data.find(&cell) != _data.end());
 }
 
-std::unordered_set<Cell,Cell_Hash>& Wall::getWall()
+std::unordered_set<iNode*>& Wall::getWall()
 {
     return(_data);
 }

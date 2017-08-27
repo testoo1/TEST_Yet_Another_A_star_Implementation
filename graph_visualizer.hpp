@@ -2,7 +2,8 @@
 
 
 #include "graph.hpp"
-#include "cell.hpp"
+#include "node.hpp"
+#include "a_star.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -20,6 +21,7 @@ public:
 
 private:
     Graph& _graph;
+    A_star& _a_star;
     sf::RenderWindow& _target;
 
     sf::RectangleShape _cell;
@@ -29,26 +31,32 @@ private:
 
     sf::RenderTexture _baseTexture;
 
+    sf::Font _font;
+
     enum class CellType
     {
         Empty,
         Wall,
         Start,
         Stop,
+        Start_shadow,
+        Stop_shadow,
         Frontier,
-        Visited     
+        Visited,
+        Path
     };
 
 public:
-    Graph_visualizer(Graph&, sf::RenderWindow&);
+    Graph_visualizer(Graph&, sf::RenderWindow&, A_star&);
 
     void init();
 
     void render();
 
-    void draw(Cell*, CellType=CellType::Empty);
-    void draw(sf::RenderTarget&, Cell*, CellType=CellType::Empty);
+    void draw(const iNode*, CellType=CellType::Empty);
+    void draw(sf::RenderTarget&, const iNode*, CellType=CellType::Empty);
 
+    void drawWeight(sf::RenderTarget& target, const iNode*, const int value);
     void drawBase(sf::RenderTarget&);
 
     sf::Vector2i getCellCoord(sf::Vector2i);

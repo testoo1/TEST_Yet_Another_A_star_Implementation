@@ -3,6 +3,7 @@
 
 #include "graph.hpp"
 #include "graph_visualizer.hpp"
+#include "a_star.hpp"
 #include "ui.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -16,16 +17,16 @@ private:
     Graph            _grid;
     Graph_visualizer _visualizer;
     UI               _ui;
-    // A_star           _a_star;
-
-    friend UI;
+    A_star           _a_star;
 
     enum class Operation
     {
-    	Move,
-    	Draw,
-    	Erase
+        Move,
+        Draw,
+        Erase
     };
+
+   friend UI;
 
 public:
     App();

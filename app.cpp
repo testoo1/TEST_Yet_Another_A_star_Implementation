@@ -1,7 +1,9 @@
 #include "app.hpp"
 
-
-App::App(): _ui(*this), _grid(11), _visualizer(_grid,_window)
+App::App(): _ui(*this),
+            _grid(11),
+            _visualizer(_grid,_window,_a_star),
+            _a_star(_grid)
 {
     // window
     _window.create(sf::VideoMode(800,800), "A*", sf::Style::Titlebar |
@@ -20,7 +22,7 @@ void App::processEvent()
     sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
 
     static Operation operation;
-    static Cell** movable;
+    static iNode** movable;
 
     while(_window.pollEvent(event))
     {
@@ -30,11 +32,38 @@ void App::processEvent()
                 _window.close();
                 break;
 
+            case(sf::Event::KeyPressed):
+            {
+                if(event.key.code == sf::Keyboard::Return)
+                {
+                    switch(_a_star.state())
+                    {
+                        case(A_star::State::Work):
+                            _a_star.pause();
+                            break;
+
+                        case(A_star::State::Pause):
+                            _a_star.restart();
+                            break;
+
+                        case(A_star::State::Stop):
+                            _a_star.start();
+                            break;
+                    }
+                }
+
+                if(event.key.code == sf::Keyboard::Space)
+                {
+                    _a_star.pause();
+                }
+                break;
+            }
+
             case(sf::Event::MouseButtonPressed):
                 sf::Vector2i cellCoord = _visualizer.getCellCoord(mousePosition);
                 if(_grid.inGraph(cellCoord))
                 {
-                    Cell& cell = _grid.getCell(cellCoord);
+                    iNode& cell = _grid.getNode(cellCoord);
                     if(_grid.canBeMoved(cell))
                     {
                         if(&cell == _grid._start)
@@ -45,19 +74,21 @@ void App::processEvent()
                         {
                             movable = &_grid._stop;
                         }
-                        operation = Operation::Move;
-                        break;
+                        operation = Operation::Move;                            
                     }
 
-                    if(_grid._wall.inWall(cell))
-                    {
-                        _grid._wall.erase(cell);
-                        operation = Operation::Erase;                    
-                    }
                     else
                     {
-                        _grid._wall.insert(cell);
-                        operation = Operation::Draw;  
+                        if(_grid._wall.inWall(cell))
+                        {
+                            _grid._wall.erase(cell);
+                            operation = Operation::Erase;                    
+                        }
+                        else
+                        {
+                            _grid._wall.insert(cell);
+                            operation = Operation::Draw;  
+                        }                        
                     }
                 }
                 break;
@@ -71,7 +102,7 @@ void App::processEvent()
             sf::Vector2i cellCoord = _visualizer.getCellCoord(mousePosition);
             if(_grid.inGraph(cellCoord))
             {
-                Cell& cell = _grid.getCell(cellCoord);
+                iNode& cell = _grid.getNode(cellCoord);
 
                 switch(operation)
                 {

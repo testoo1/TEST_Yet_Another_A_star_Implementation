@@ -1,48 +1,53 @@
 #pragma once
 
 
-#include "node.hpp"
 #include "neighbors.hpp"
 #include "wall.hpp"
 
-#include <SFML/System/Vector2.hpp>
-
+#include <cmath>
+#include <functional>
+#include <limits>
 #include <vector>
 
-class Graph_visualizer;
 
-
+template<class T>
 class Graph
 {
 private:
     int _size;
-    std::vector<std::vector<iNode>> _data;    
+    std::vector<std::vector<T>> _data;    
 
-    friend Neighbors;
-    friend Graph_visualizer;
+    T* _start;
+    T* _goal;
+
+    Wall<T>      _wall;
+    Neighbors<T> _neighbors;
 
 public:
-    iNode* _start;
-    iNode* _stop;
-
-    Wall  _wall;
-    Neighbors _neighbors;
-
     Graph(int size);
 
-    iNode& getNode(sf::Vector2i);
 
-    double cost(iNode*, iNode*);
+    int size() const;
+    std::vector<std::vector<T>>& data();
 
-    bool canBeMoved(iNode&);
-    bool canBePlaced(iNode&);
+    T*& start();
+    T*& goal();
 
-    bool canBeWalled(iNode&);
+    Wall<T>& wall();
+    Neighbors<T>& neighbors();
 
-    bool inGraph(sf::Vector2i);
+    bool inBounds(int, int) const;
+
+    T* getNodeAdress(int, int);
+
+    double cost(T*, T*);
+
+
+    bool canBeMoved(T*) const;
+    bool canBePlaced(T*) const;
+
+    bool canBeWalled(T*) const;
 };
 
 
-
-
-
+#include "graph.inl"

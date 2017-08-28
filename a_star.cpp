@@ -1,6 +1,6 @@
 #include "a_star.hpp"
 
-A_star::A_star(Graph& graph): _algorithmThread(&A_star::runThread, this)
+A_star::A_star(Graph<Node<int>>& graph): _algorithmThread(&A_star::runThread, this)
 {
     _graph = &graph;
 }
@@ -31,8 +31,8 @@ void A_star::run()
     clearResult(); 
     aStarMutex.unlock(); // lock mutex <-
 
-    _startNode = _graph->_start;                                               // FIX IT
-    _goalNode  = _graph->_stop;                                                // FIX IT
+    _startNode = _graph->start();                                               // FIX IT
+    _goalNode  = _graph->goal();                                                // FIX IT
 
     _frontier.push({0,_startNode});
     _cameFrom[_startNode] = nullptr;
@@ -54,11 +54,18 @@ void A_star::run()
                 break;
             }
 
-            for(auto& next: _graph->_neighbors.get(*current))                 // FIX IT
+            for(auto& next: _graph->neighbors().get(current))
             {
-                if(!_graph->_wall.inWall(*next))                              // FIX IT
+                if(!_graph->wall().contain(next))
                 {
-                    double new_cost = _cost_so_far[current] + _graph->cost(current, next);
+                    double costBetweenNodes = _graph->cost(current, next);
+
+                    if(costBetweenNodes == std::numeric_limits<double>::max())
+                    {
+                        continue;
+                    }
+
+                    double new_cost = _cost_so_far[current] + costBetweenNodes;
                     
                     if(_cost_so_far.find(next) == _cost_so_far.end() ||
                        new_cost < _cost_so_far[next])

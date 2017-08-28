@@ -1,7 +1,8 @@
 #include "graph_visualizer.hpp"
 #include <string>
+#include <limits>
 
-Graph_visualizer::Graph_visualizer(Graph& graph, sf::RenderWindow& target, A_star& algoritm):
+Graph_visualizer::Graph_visualizer(Graph<Node<int>>& graph, sf::RenderWindow& target, A_star& algoritm):
     _graph(graph),
     _target(target),
     _a_star(algoritm)
@@ -12,12 +13,12 @@ Graph_visualizer::Graph_visualizer(Graph& graph, sf::RenderWindow& target, A_sta
 void Graph_visualizer::init()
 {
     // REAL value for final application (uncomment this)
-    // for window(800,800) gap = 4
-    // _gap = _target.getSize().x/((_graph._size-1)*10*2);
+    // for window(800,800) and graph(11) -> gap = 4
+    _gap = _target.getSize().x/((_graph.size()-1)*10*2);
     
     // TEMP value for test cell detection algoritm (isPointToCell)
-    _gap = 20;
-    _cellSize = static_cast<float>(_target.getSize().x - _gap*(_graph._size-1))/_graph._size;
+    // _gap = 20;
+    _cellSize = static_cast<float>(_target.getSize().x - _gap*(_graph.size()-1))/_graph.size();
     _cell.setSize(sf::Vector2f(_cellSize,_cellSize));
 
     _baseTexture.create(_target.getSize().x, _target.getSize().y);
@@ -67,14 +68,14 @@ void Graph_visualizer::render()
     _a_star.aStarMutex.unlock(); // lock mutex <-
 
     // Draw wall
-    for(auto element: _graph._wall.getWall())
+    for(auto element: _graph.wall().get())
     {
         draw(element, CellType::Wall);
     }
 
-    // Draw start and stop cells
-    draw(_graph._start, CellType::Start);
-    draw(_graph._stop, CellType::Stop);  
+    // Draw start and goal cells
+    draw(_graph.start(), CellType::Start);
+    draw(_graph.goal(), CellType::Stop);  
 }
 
 void Graph_visualizer::draw(const iNode* cell, CellType type)
@@ -126,14 +127,21 @@ void Graph_visualizer::draw(sf::RenderTarget& target, const iNode* cell, CellTyp
     _cell.setFillColor(sf::Color::White);
 }
 
-void Graph_visualizer::drawWeight(sf::RenderTarget& target, const iNode* node, const int value)
+void Graph_visualizer::drawWeight(sf::RenderTarget& target, const iNode* node, const double value)
 {
     float x = (_cellSize + _gap)*node->x;
     float y = (_cellSize + _gap)*node->y;   
 
-    sf::Text text(std::to_string(value), _font);
+    std::string valueText;
+    value != std::numeric_limits<double>::max()? valueText = std::to_string(static_cast<int>(value)) :
+                                                 valueText = '-';
 
-    text.setCharacterSize(static_cast<unsigned int>(_cellSize/3));
+    sf::Text text(valueText, _font);
+
+// TEMP
+    text.setCharacterSize(14);
+// TEMP
+    // text.setCharacterSize(static_cast<unsigned int>(_cellSize/2));
     text.setColor(sf::Color::White);
 
     sf::FloatRect textRect = text.getLocalBounds();
@@ -146,7 +154,7 @@ void Graph_visualizer::drawWeight(sf::RenderTarget& target, const iNode* node, c
 
 void Graph_visualizer::drawBase(sf::RenderTarget& target)
 {
-    for(auto row: _graph._data)
+    for(auto row: _graph.data())
     {
         for(auto cell: row)
         {
@@ -165,14 +173,12 @@ sf::Vector2i Graph_visualizer::getCellCoord(sf::Vector2i coord)
 {
     if(isPointToCell(coord))
     {
-        int x = (coord.x*_graph._size)/_target.getSize().x;
-        int y = (coord.y*_graph._size)/_target.getSize().y;
+        int x = (coord.x*_graph.size())/_target.getSize().x;
+        int y = (coord.y*_graph.size())/_target.getSize().y;
 
-        sf::Vector2i cellCoord{x,y};
-
-        if(_graph.inGraph(cellCoord))
+        if(_graph.inBounds(x, y))
         {
-            return(cellCoord);            
+            return(sf::Vector2i(x,y));            
         }
     }
 

@@ -11,12 +11,11 @@
 #include <unordered_map>
 
 #include <functional>
+#include <limits>
 
 #include <chrono>
 #include <thread>
 #include <mutex>
-
-class Graph;
 
 
 using Frontier_t = iterable_priority_queue<std::pair<double, iNode*>>;
@@ -43,7 +42,7 @@ public:
     std::mutex  aStarMutex;
 
 private:
-    Graph* _graph {nullptr};
+    Graph<Node<int>>* _graph {nullptr};
 
     iNode* _startNode {nullptr};
     iNode* _goalNode  {nullptr};
@@ -65,7 +64,7 @@ private:
     Path_t      _path;
 
 public:
-    A_star(Graph&);
+    A_star(Graph<Node<int>>&);
 
     void run();
     void runThread();

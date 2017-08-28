@@ -20,7 +20,7 @@ public:
     };
 
 private:
-    Graph& _graph;
+    Graph<Node<int>>& _graph;
     A_star& _a_star;
     sf::RenderWindow& _target;
 
@@ -47,7 +47,7 @@ private:
     };
 
 public:
-    Graph_visualizer(Graph&, sf::RenderWindow&, A_star&);
+    Graph_visualizer(Graph<Node<int>>&, sf::RenderWindow&, A_star&);
 
     void init();
 
@@ -56,7 +56,7 @@ public:
     void draw(const iNode*, CellType=CellType::Empty);
     void draw(sf::RenderTarget&, const iNode*, CellType=CellType::Empty);
 
-    void drawWeight(sf::RenderTarget& target, const iNode*, const int value);
+    void drawWeight(sf::RenderTarget& target, const iNode*, const double value);
     void drawBase(sf::RenderTarget&);
 
     sf::Vector2i getCellCoord(sf::Vector2i);

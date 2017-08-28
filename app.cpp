@@ -1,7 +1,7 @@
 #include "app.hpp"
 
 App::App(): _ui(*this),
-            _grid(11),
+            _grid(30),
             _visualizer(_grid,_window,_a_star),
             _a_star(_grid)
 {
@@ -67,32 +67,32 @@ void App::processEvent()
                 if(event.mouseButton.button == sf::Mouse::Left)
                 {
                     sf::Vector2i cellCoord = _visualizer.getCellCoord(mousePosition);
-                    if(_grid.inGraph(cellCoord))
+                    if(_grid.inBounds(cellCoord.x, cellCoord.y))
                     {
-                        iNode& cell = _grid.getNode(cellCoord);
+                        iNode* cell = _grid.getNodeAdress(cellCoord.x, cellCoord.y);
                         if(_grid.canBeMoved(cell))
                         {
-                            if(&cell == _grid._start)
+                            if(cell == _grid.start())
                             {
-                                movable = &_grid._start;
+                                movable = &_grid.start();
                             }
-                            else if (&cell == _grid._stop)
+                            else if (cell == _grid.goal())
                             {
-                                movable = &_grid._stop;
+                                movable = &_grid.goal();
                             }
                             operation = Operation::Move;                            
                         }
 
                         else
                         {
-                            if(_grid._wall.inWall(cell))
+                            if(_grid.wall().contain(cell))
                             {
-                                _grid._wall.erase(cell);
+                                _grid.wall().erase(cell);
                                 operation = Operation::Erase;                    
                             }
                             else
                             {
-                                _grid._wall.insert(cell);
+                                _grid.wall().insert(cell);
                                 operation = Operation::Draw;  
                             }
                         }
@@ -107,28 +107,28 @@ void App::processEvent()
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             sf::Vector2i cellCoord = _visualizer.getCellCoord(mousePosition);
-            if(_grid.inGraph(cellCoord))
+            if(_grid.inBounds(cellCoord.x, cellCoord.y))
             {
-                iNode& cell = _grid.getNode(cellCoord);
+                iNode* cell = _grid.getNodeAdress(cellCoord.x, cellCoord.y);
 
                 switch(operation)
                 {
                     case Operation::Move:
                         if(_grid.canBePlaced(cell))
                         {
-                            *movable = &cell;                            
+                            *movable = cell;                            
                         }
                         break;
                     
                     case Operation::Draw:
                         if(_grid.canBeWalled(cell))
                         {
-                            _grid._wall.insert(cell);
+                            _grid.wall().insert(cell);
                         }
                         break;
                     
                     case Operation::Erase:
-                        _grid._wall.erase(cell);
+                        _grid.wall().erase(cell);
                         break;
                 }
             }

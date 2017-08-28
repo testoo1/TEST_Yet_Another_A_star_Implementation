@@ -1,20 +1,23 @@
 #pragma once
 
 
-#include "node.hpp"
-
 #include <unordered_set>
 
 
+template<class T>
 class Wall
 {
 private:
-    std::unordered_set<iNode*> _data;
+    std::unordered_set<T*> _data;
 
 public:
-    void insert(iNode&);
-    void erase(iNode&);
+    void insert(T*);
+    void erase(T*);
 
-    bool inWall(iNode&);
-    std::unordered_set<iNode*>& getWall();
+    bool contain(T*) const;
+
+    const std::unordered_set<T*>& get() const;
 };
+
+
+#include "wall.inl"

@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "node.hpp"
 #include "graph.hpp"
 #include "graph_visualizer.hpp"
 #include "a_star.hpp"
@@ -14,7 +15,7 @@ class App
 private:
     sf::RenderWindow _window;
 
-    Graph            _grid;
+    Graph<Node<int>> _grid;
     Graph_visualizer _visualizer;
     UI               _ui;
     A_star           _a_star;

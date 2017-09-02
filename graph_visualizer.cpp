@@ -31,7 +31,7 @@ void Graph_visualizer::render()
     _target.draw(sf::Sprite(_baseTexture .getTexture()));
 
     // Draw algorithm data
-    _a_star.aStarMutex.lock(); // lock mutex ->
+    _a_star.lock(); // lock mutex ->
 
     for(auto element: _a_star.cameFrom())
     {
@@ -65,7 +65,7 @@ void Graph_visualizer::render()
     }   
 // TEMP <-
 
-    _a_star.aStarMutex.unlock(); // lock mutex <-
+    _a_star.unlock(); // lock mutex <-
 
     // Draw wall
     for(auto element: _graph.wall().get())

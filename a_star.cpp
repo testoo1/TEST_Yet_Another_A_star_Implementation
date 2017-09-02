@@ -1,9 +1,9 @@
 #include "a_star.hpp"
 
-A_star::A_star(Graph<Node<int>>& graph): _algorithmThread(&A_star::runThread, this)
-{
-    _graph = &graph;
-}
+A_star::A_star(Graph<Node<int>>& graph): Process(State::Stop,
+                                                 std::thread(&A_star::runThread, this)),
+                                         _graph(&graph)
+{}
 
 void A_star::runThread()
 {
@@ -18,7 +18,7 @@ void A_star::runThread()
                 break;
 
             case(State::Stop):
-                std::this_thread::sleep_for(std::chrono::milliseconds(_scanDelay));
+                sleep_for(_scanDelay);
                 break;
         }
     }    
@@ -27,9 +27,9 @@ void A_star::runThread()
 void A_star::run()
 {
 
-    aStarMutex.lock();  // lock mutex ->
+    lock();   // lock mutex ->
     clearResult(); 
-    aStarMutex.unlock(); // lock mutex <-
+    unlock(); // lock mutex <-
 
     _startNode = _graph->start();                                               // FIX IT
     _goalNode  = _graph->goal();                                                // FIX IT
@@ -80,13 +80,13 @@ void A_star::run()
                         _nodeCost[next] = priority;
                     }      
                 }
-                std::this_thread::sleep_for(std::chrono::milliseconds(_delay));               
+                sleep_for(_delay);
             }            
         }
 
         else if(_state == State::Pause)
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(_scanDelay));
+            sleep_for(_scanDelay);
 
             if(_state == State::Restart)
             {
@@ -146,11 +146,6 @@ void A_star::delay(const Delay& delay)
 const Delay A_star::delay() const
 {
     return(_delay);
-}
-
-const A_star::State A_star::state() const
-{
-    return(_state);
 }
 
 const iNode* A_star::startNode() const

@@ -1,6 +1,8 @@
 #pragma once
 
 
+#include "process.hpp"
+
 #include "node.hpp"
 #include "graph.hpp"
 
@@ -13,11 +15,6 @@
 #include <functional>
 #include <limits>
 
-#include <chrono>
-#include <thread>
-#include <mutex>
-
-
 using Frontier_t = iterable_priority_queue<std::pair<double, iNode*>>;
 using CameFrom_t = std::unordered_map<iNode*,iNode*>;
 using Path_t     = std::vector<iNode*>;
@@ -28,31 +25,15 @@ using Heuristic_t = std::function<double(const iNode*, const iNode*)>;
 using Delay      = std::chrono::milliseconds;
 
 
-class A_star
+class A_star: public Process
 {
-public:
-    enum class State
-    {
-        Work,
-        Pause,
-        Stop,
-        Restart
-    };
-
-    std::mutex  aStarMutex;
-
-private:
     Graph<Node<int>>* _graph {nullptr};
 
     iNode* _startNode {nullptr};
     iNode* _goalNode  {nullptr};
 
-    State _state {State::Stop};
-
     Delay _delay {10};
     Delay _scanDelay {100};
-
-    std::thread _algorithmThread;
 
     Heuristic_t heuristic = manhattan<iNode>;
 
@@ -80,7 +61,6 @@ public:
     void delay(const Delay&);
 
     const Delay delay() const;
-    const State state() const;
 
     const iNode* startNode() const;
     const iNode* goalNode()  const;

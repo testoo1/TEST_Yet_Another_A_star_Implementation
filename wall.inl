@@ -11,6 +11,12 @@ void Wall<T>::erase(T* node)
 }
 
 template<class T>
+void Wall<T>::clear()
+{
+    return(_data.clear());
+}
+
+template<class T>
 bool Wall<T>::contain(T* node) const
 {
     return(_data.find(node) != _data.end());

@@ -1,9 +1,10 @@
 #include "app.hpp"
 
-App::App(): _ui(*this),
-            _grid(30),
+App::App(): _grid(30),
+            _a_star(_grid),
             _visualizer(_grid,_window,_a_star),
-            _a_star(_grid)
+            _ui(_window, _a_star)
+
 {
     // window
     _window.create(sf::VideoMode(800,800), "A*", sf::Style::Titlebar |
@@ -13,6 +14,14 @@ App::App(): _ui(*this),
 
     // visualizer
     _visualizer.init();
+
+    // UI
+    _ui.eventPool[UI::Event::Start]    = std::bind(&A_star::start, &_a_star);
+    _ui.eventPool[UI::Event::Pause]    = std::bind(&A_star::pause, &_a_star);
+    _ui.eventPool[UI::Event::Continue] = std::bind(&A_star::start, &_a_star);
+    _ui.eventPool[UI::Event::Restart]  = std::bind(&A_star::restart , &_a_star);
+    
+    _ui.eventPool[UI::Event::Clear_Wall] = std::bind(&Wall<Node<int>>::clear, &_grid.wall());
 }
 
 void App::processEvent()
@@ -66,35 +75,38 @@ void App::processEvent()
             case(sf::Event::MouseButtonPressed):
                 if(event.mouseButton.button == sf::Mouse::Left)
                 {
-                    sf::Vector2i cellCoord = _visualizer.getCellCoord(mousePosition);
-                    if(_grid.inBounds(cellCoord.x, cellCoord.y))
+                    if(!ImGui::GetIO().WantCaptureMouse)
                     {
-                        iNode* cell = _grid.getNodeAdress(cellCoord.x, cellCoord.y);
-                        if(_grid.canBeMoved(cell))
+                        sf::Vector2i cellCoord = _visualizer.getCellCoord(mousePosition);
+                        if(_grid.inBounds(cellCoord.x, cellCoord.y))
                         {
-                            if(cell == _grid.start())
+                            iNode* cell = _grid.getNodeAdress(cellCoord.x, cellCoord.y);
+                            if(_grid.canBeMoved(cell))
                             {
-                                movable = &_grid.start();
+                                if(cell == _grid.start())
+                                {
+                                    movable = &_grid.start();
+                                }
+                                else if (cell == _grid.goal())
+                                {
+                                    movable = &_grid.goal();
+                                }
+                                operation = Operation::Move;                            
                             }
-                            else if (cell == _grid.goal())
-                            {
-                                movable = &_grid.goal();
-                            }
-                            operation = Operation::Move;                            
-                        }
 
-                        else
-                        {
-                            if(_grid.wall().contain(cell))
-                            {
-                                _grid.wall().erase(cell);
-                                operation = Operation::Erase;                    
-                            }
                             else
                             {
-                                _grid.wall().insert(cell);
-                                operation = Operation::Draw;  
-                            }
+                                if(_grid.wall().contain(cell))
+                                {
+                                    _grid.wall().erase(cell);
+                                    operation = Operation::Erase;                    
+                                }
+                                else
+                                {
+                                    _grid.wall().insert(cell);
+                                    operation = Operation::Draw;  
+                                }
+                            }   
                         }
                     }                
                 }
@@ -147,8 +159,13 @@ void App::run()
 {
     while(_window.isOpen())
     {
+        // SFML
         processEvent();
         render();
+
+        // ImGui 
+        _ui.update();
+        _ui.draw();
 
         _window.display();
     }

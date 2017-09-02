@@ -9,6 +9,8 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include <functional>
+
 
 class App
 {
@@ -27,8 +29,6 @@ private:
         Draw,
         Erase
     };
-
-   friend UI;
 
 public:
     App();

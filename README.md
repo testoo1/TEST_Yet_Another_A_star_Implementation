@@ -1,14 +1,25 @@
-### Yet Anoter One A* Implementation
+### Yet Another One A* Implementation
 
-Программа визализирует алгоритм A*
+![example](https://raw.githubusercontent.com/testoo1/TEST_GFOR/master/C%2B%2B_Yet_Another_A_star_Implementation/Yet_Another_A_star_Implementation.gif)
 
-Программа рализует алгоритм поиска на графе А* (описание работы алгоритма на {[английском](https://www.redblobgames.com/pathfinding/a-star/introduction.html)}/[русском](https://habrahabr.ru/post/331192/)).
+Программа является интерактивной реализацией алгоритма поиска кратчайшего пути на графе **A\***
+
+Описание работы алгоритма вы можете найти по следующим ссылкам:
+* [на русском](https://habrahabr.ru/post/331192/)
+* [на английском](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
 
 ---
-Вывод графики осуществляется с помощью библиотеки [SFML](https://github.com/SFML/SFML), UI - с помощью библиотеки [ImGui](https://github.com/ocornut/imgui)
+
+**Зависимости**
+
+Для сборки программы из исходников необходимы следующие библиотеки:
+* [SFML](https://github.com/SFML/SFML) - используется для вывода графики
+* [dear imgui](https://github.com/ocornut/imgui) - используется для отрисовки UI
+
 
 ---
 
 **Известные проблемы:**
 
-* На компьютерах с малым количеством графической памяти программа может работать некоректно (часть элементов не будет отображаться)
+* На компьютерах с малым количеством графической памяти программа может отображаться некорректно
+* Иногда по неизвестным причинам случаются вылеты программы

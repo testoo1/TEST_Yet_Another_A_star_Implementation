@@ -1,7 +1,5 @@
 ### Yet Another One A* Implementation
 
-![example](https://raw.githubusercontent.com/testoo1/TEST_GFOR/master/C%2B%2B_Yet_Another_A_star_Implementation/Yet_Another_A_star_Implementation.gif)
-
 Программа является интерактивной реализацией алгоритма поиска кратчайшего пути на графе **A\***
 
 Описание работы алгоритма [на русском](https://habrahabr.ru/post/331192/) / [на английском](https://www.redblobgames.com/pathfinding/a-star/introduction.html).
@@ -21,3 +19,9 @@
 
 * На компьютерах с малым объемом графической памяти программа может отображаться некорректно
 * Иногда программа экстренно завершает работу (причина не определена)
+* Окно программы имеет фиксированный размер 1024х1024 пикселей, из-за этого на экранах с меньшим разрешением (хотя бы по одной из сторон) отображаться будет некорректно.
+---
+
+**Демонстрация работы программы:**
+
+![example](https://raw.githubusercontent.com/testoo1/TEST_GFOR/master/C%2B%2B_Yet_Another_A_star_Implementation/Yet_Another_A_star_Implementation.gif)
